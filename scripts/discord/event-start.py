@@ -13,10 +13,12 @@ def main() :
 
     camera_id = sys.argv[1]
     camera_name = sys.argv[2]
-    time_repr = sys.argv[3]
+    event_id = sys.argv[3]
+
+    print(f"Motion detected at camera {camera_name} (camera_id={camera_id}, event_id={event_id})")
 
     webhook = DiscordWebhook(url=webhook_url)
-    webhook.set_content(f"Motion detected at {camera_name}, {time_repr}")
+    webhook.set_content(f"Motion detected at {camera_name}")
 
     webhook.execute()
 

@@ -2,6 +2,7 @@
 
 import os
 import sys
+from datetime import datetime
 
 from discord_webhook import DiscordWebhook, DiscordEmbed
 
@@ -16,14 +17,20 @@ def main() :
     camera_name = sys.argv[2]
     event_id = sys.argv[3]
 
+    message_dt = datetime.strptime(event_id[5:], '%Y%m%d%H%M%S')
+
     webhook_urls = get_urls()
 
     wh_embeds: list[DiscordEmbed] = []
-    message = os.getenv('MOTION_INSTRUCTION_MESSAGE')
-    if message is not None :
-        wh_embeds.append(DiscordEmbed(title='Notice', description=message, color=EMBED_COLOUR))
+    message = "An image and a video should soon be uploaded, please review those in order to check if something abnormal is indeed happening. If so, please take the necessary actions, such as calling the local authorities."
+    address = os.getenv('LOCATION_ADDRESS')
+    if address is not None :
+        message += f"\n\n*The facilities being monitored by this camera are located at the following address : ||{address}||.*"
+    wh_embeds: list[DiscordEmbed] = [
+        DiscordEmbed(title='Notice', description=message, color=EMBED_COLOUR, footer={'text': f"Camera {camera_id}"}, timestamp=int(message_dt.timestamp()))
+    ]
 
-    wh_content = f"Motion detected at camera {camera_name} (camera_id={camera_id}, event_id={event_id})"
+    wh_content = f"Motion detected at camera {camera_name}"
 
     webhooks = DiscordWebhook.create_batch(urls=webhook_urls, content=wh_content, embeds=wh_embeds)
 

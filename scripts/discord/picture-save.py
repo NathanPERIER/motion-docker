@@ -2,26 +2,30 @@
 
 import os
 import sys
-import json
 
 from discord_webhook import DiscordWebhook
 
+from common import get_urls
+
 
 def main() :
-
-    webhook_url = os.getenv('WEBHOOK_URL')
 
     camera_id = sys.argv[1]
     camera_name = sys.argv[2]
     filepath = sys.argv[3]
 
-    webhook = DiscordWebhook(url=webhook_url)
-    webhook.set_content(f"Picture saved at {camera_name}")
+    webhook_urls = get_urls()
 
+    wh_content = f"Picture saved at {camera_name}"
+
+    wh_files: dict[str,bytes] = {}
     with open(filepath, 'rb') as f:
-        webhook.add_file(file=f.read(), filename=os.path.basename(filepath))
+        wh_files[os.path.basename(filepath)] = f.read()
 
-    webhook.execute()
+    webhooks = DiscordWebhook.create_batch(urls=webhook_urls, content=wh_content, files=wh_files)
+
+    for webhook in webhooks :
+        webhook.execute()
 
 
 if __name__ == '__main__' :

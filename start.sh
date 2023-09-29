@@ -3,5 +3,4 @@
 export MOTION_START_TIME=$(date '+%Y%m%d%H%M%S')
 
 
-motion -c '/etc/motion/motion.conf'
-
+exec motion -c '/etc/motion/motion.conf'

@@ -8,8 +8,11 @@ RUN rm /usr/lib/python3.*/EXTERNALLY-MANAGED && pip3 install -r requirements.txt
 
 ENV MOTION_STARTUP_DELAY=1m
 
-RUN mkdir /etc/scripts
+RUN mkdir /etc/scripts /opt/motion
 COPY scripts /etc/scripts/
 
-ENTRYPOINT motion -c '/etc/motion/motion.conf'
+WORKDIR /opt/motion
+COPY start.sh ./
+
+ENTRYPOINT sh start.sh
 

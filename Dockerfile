@@ -6,6 +6,7 @@ RUN apk add --update --no-cache python3 py3-pip && ln -sf python3 /usr/bin/pytho
 COPY ./requirements.txt ./
 RUN rm /usr/lib/python3.*/EXTERNALLY-MANAGED && pip3 install -r requirements.txt && rm requirements.txt
 
+ENV MOTION_STARTUP_DELAY=1m
 
 RUN mkdir /etc/scripts
 COPY scripts /etc/scripts/
